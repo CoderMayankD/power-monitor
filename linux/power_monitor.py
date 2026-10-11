@@ -18,6 +18,7 @@ import calendar
 import csv
 import datetime as dt
 import glob
+import io
 import json
 import os
 import re
@@ -337,6 +338,28 @@ def write_summary():
     write_atomic(os.path.join(LOG_DIR, "daily_summary.csv"), "\n".join(lines) + "\n")
 
 
+def migrate_day_file(path):
+    """Rewrite, in place, a day file started by an older version so every row matches SAMPLE_HEADER.
+    Columns the old version didn't log are left blank (read as 0)."""
+    with open(path, newline="") as f:
+        rows = list(csv.reader(f))
+    if not rows or rows[0] == SAMPLE_HEADER:
+        return
+    old = rows[0]
+    out = [SAMPLE_HEADER]
+    for r in rows[1:]:
+        if len(r) == len(SAMPLE_HEADER):
+            out.append(r)
+        elif len(r) == len(old):
+            d = dict(zip(old, r))
+            out.append([d.get(c, "") for c in SAMPLE_HEADER])
+    buf = io.StringIO()
+    csv.writer(buf).writerows(out)
+    with open(path, "r+", newline="") as f:  # same inode, so an open appender keeps working
+        f.write(buf.getvalue())
+        f.truncate()
+
+
 def run():
     os.makedirs(LOG_DIR, exist_ok=True)
     sampler = Sampler()
@@ -357,6 +380,8 @@ def run():
                 write_summary()
             path = os.path.join(LOG_DIR, f"{day}.csv")
             new = not os.path.exists(path)
+            if not new:
+                migrate_day_file(path)
             f = open(path, "a", newline="")
             writer = csv.writer(f)
             if new:

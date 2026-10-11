@@ -51,9 +51,12 @@ class LogStore:
                 continue
             ent = self.files.setdefault(path, {"offset": 0, "index": None, "rows": []})
             try:
-                if os.path.getsize(path) < ent["offset"]:  # file was replaced/truncated
-                    ent.update(offset=0, index=None, rows=[])
                 with open(path, "rb") as f:
+                    header = f.readline()
+                    # Start over if the file was truncated or rewritten with a different header (format upgrade).
+                    if os.path.getsize(path) < ent["offset"] or ent.get("header", header) != header:
+                        ent.update(offset=0, index=None, rows=[])
+                    ent["header"] = header
                     f.seek(ent["offset"])
                     chunk = f.read()
             except OSError:
@@ -66,7 +69,7 @@ class LogStore:
                     ent["ts"], ent["iv"] = p.index("timestamp"), p.index("interval_s")
                     continue
                 try:
-                    vals = tuple(float(p[i]) if i is not None else 0.0 for i in ent["index"])
+                    vals = tuple(float(p[i]) if i is not None and p[i] else 0.0 for i in ent["index"])
                     ent["rows"].append((dt.datetime.fromisoformat(p[ent["ts"]]), float(p[ent["iv"]]), vals))
                 except (ValueError, IndexError):
                     pass
