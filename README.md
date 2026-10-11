@@ -5,6 +5,19 @@ current watts, units (kWh) used in the last N hours, cost, and a per-component b
 (CPU, GPU, RAM, SSDs, motherboard, fans, network, PSU loss) with a chart and the raw log.
 Readings are taken every 10 seconds and saved as daily CSV files.
 
+On Linux the window also has:
+
+- **Monitor Now** – tick components and/or programs, set a duration (10 s minimum) and watch live
+  now/avg/peak watts and energy; results are saved and announced when it ends.
+- **Processes** – the power each program caused above idle (from its share of CPU time and GPU use).
+- **Alerts** – a desktop notification naming the programs responsible when total power stays above a
+  limit; every alert is logged.
+- **Analytics** – daily/7-day/month KPIs with projections and cost, energy per day by component,
+  an hour-by-hour heatmap, a typical-day profile, energy share and top programs.
+
+The Windows version currently has the core features (live power, breakdown, chart, log); these four are
+Linux-only for now.
+
 | Folder | Platform | Logger | Window |
 |---|---|---|---|
 | `linux/` | Linux with systemd | `power_monitor.py` as a root systemd service | GTK 3 (`power_monitor_ui.py`) |

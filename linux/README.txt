@@ -14,7 +14,20 @@ WHAT YOU GET
   - "Power Monitor" window on your Desktop and app menu (also opens at login):
       current watts, units (kWh) used in the last N hours, cost, a breakdown for every
       component (CPU, GPU, RAM, SSDs, motherboard, fans, network, PSU loss), a chart and the raw log.
-  - Daily CSV files in ~/power-logs/ (one per day) plus daily_summary.csv and hardware.json.
+      Tabs: Breakdown, Monitor Now, Processes, Alerts, Analytics, Chart, Log.
+  - Monitor Now: tick any components and/or programs, set a duration (h m s, 10 s minimum) and press
+    Start. Live now/avg/peak watts and energy for each, a notification at the end, and the results are
+    saved to ~/power-logs/monitor_sessions.csv.
+  - Per-program power: every reading records which programs caused the power above idle (from their
+    share of CPU time and GPU use). See the Processes tab or "power-report".
+  - Alerts: when the total stays at or above a limit (default 250 W for 30 s) you get a desktop
+    notification naming the programs responsible; each alert is logged with its duration, peak, energy
+    and top programs. Change the limit in the Alerts tab.
+  - Analytics: today / yesterday / 7-day / month tiles with projections and cost, energy per day by
+    component, an hour-by-hour heatmap, a typical-day profile, where the energy went, top programs.
+    Hover any bar, cell or tile for details.
+  - CSV files in ~/power-logs/: one per day (all components), procs-<day>.csv (programs),
+    daily_summary.csv, hourly.csv, alerts.csv, monitor_sessions.csv, plus hardware.json and config.json.
   - Terminal report:   power-report today | month | all | 2026-10   [--price 8]
 
 HOW ACCURATE IS IT?
