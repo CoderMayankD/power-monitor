@@ -12,18 +12,23 @@ Readings are taken every 10 seconds and saved as daily CSV files.
 
 ## Install
 
-- **Linux:** `cd linux && sudo ./install.sh`
-- **Windows:** double-click `windows\Install.bat`
+Ready-made installers are in [`dist/`](dist/):
+
+- **Linux:** download `dist/PowerMonitor-Linux.tar.gz`, extract it, then run `sudo ./install.sh` in the folder
+- **Windows:** download `dist/PowerMonitor-Windows.zip`, unzip it, then double-click `Install.bat`
+
+From a clone you can also install directly: `cd linux && sudo ./install.sh`, or double-click `windows\Install.bat`.
 
 See `linux/README.txt` and `windows/README.txt` for details and uninstalling.
 
 ## Build shareable packages
 
 ```
-./build.sh [output-dir]     # default: your Desktop
+./build.sh [output-dir]     # default: dist/ (also copied to your Desktop)
 ```
 
-Creates `PowerMonitor-Linux.tar.gz` and `PowerMonitor-Windows.zip`. The Windows scripts get a UTF-8 BOM
+Creates `PowerMonitor-Linux.tar.gz` and `PowerMonitor-Windows.zip`. Rerun it after changing the code and
+commit the updated `dist/` files. The Windows scripts get a UTF-8 BOM
 and CRLF line endings, which Windows PowerShell 5.1 needs.
 
 ## Accuracy

@@ -1,8 +1,12 @@
 #!/bin/bash
-# Build shareable packages onto the Desktop: PowerMonitor-Linux.tar.gz and PowerMonitor-Windows.zip
+# Build shareable packages into dist/ (committed to the repo) and copy them to the Desktop:
+# PowerMonitor-Linux.tar.gz and PowerMonitor-Windows.zip
 set -euo pipefail
 SRC="$(cd "$(dirname "$0")" && pwd)"
-OUT="${1:-$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop")}"
+OUT="${1:-$SRC/dist}"
+DESKTOP="$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop")"
+mkdir -p "$OUT"
+rm -f "$OUT/PowerMonitor-Linux.tar.gz" "$OUT/PowerMonitor-Windows.zip"
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
@@ -21,4 +25,7 @@ for f in "$SRC"/windows/*; do
     fi
 done
 (cd "$WORK" && zip -qr "$OUT/PowerMonitor-Windows.zip" PowerMonitor-Windows)
+if [ -d "$DESKTOP" ] && [ "$(realpath "$OUT")" != "$(realpath "$DESKTOP")" ]; then
+    cp "$OUT"/PowerMonitor-{Linux.tar.gz,Windows.zip} "$DESKTOP/"
+fi
 ls -la "$OUT"/PowerMonitor-*
