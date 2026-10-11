@@ -107,6 +107,10 @@ as_user env DBUS_SESSION_BUS_ADDRESS="$USER_BUS" gio set "$DESKTOP_DIR/power-mon
 systemctl daemon-reload
 systemctl enable power-monitor.service >/dev/null
 systemctl restart power-monitor.service
+# Close a window still running an older version; it is reopened from the Desktop icon / at next login.
+if pkill -u "$USER_NAME" -f "^/usr/bin/python3 ($PREFIX|$USER_HOME/power-monitor/linux)/power_monitor_ui.py"; then
+    echo "Closed the open Power Monitor window. Open it again to get the new version."
+fi
 
 echo "Waiting for the first readings..."
 sleep 12
